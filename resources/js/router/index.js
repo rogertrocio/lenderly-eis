@@ -3,6 +3,7 @@ import { createWebHistory, createRouter } from 'vue-router';
 import MainLayout from '../layouts/MainLayout.vue';
 import DashboardPage from '../pages/DashboardPage.vue';
 import EmployeePage from '../pages/employee/EmployeePage.vue';
+import LoginLayout from '../layouts/LoginLayout.vue';
 
 const routes = [
   {
@@ -16,10 +17,16 @@ const routes = [
       },
       {
         path: '/employees',
-        name: 'Employees',
+        name: 'Employee',
         component: EmployeePage,
       },
     ]
+  },
+
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginLayout,
   },
 ];
 
