@@ -12,7 +12,7 @@
             <li
               class="nav-item"
               style="cursor: pointer;"
-              @click="logout">
+              @click="showLogoutConfirmDialog">
               <span class="nav-link">Logout</span>
             </li>
           </ul>
@@ -20,20 +20,42 @@
       </div>
     </nav>
   </header>
+
+  <ConfirmDialog
+    ref="logoutConfirmDialogRef"
+    id="sampleModal"
+    title="Confirmation"
+    message="Are you sure you want to log out?"
+    confirmLabel="Logout"
+    confirmVariant="danger"
+    :loading="store.loading"
+    @confirm="logout"
+    @cancel="closeLogoutConfirmDialog" />
 </template>
 <script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue3-toastify'
 import { useAuthStore } from '../../stores/auth'
+import ConfirmDialog from '../../components/dialogs/ConfirmDialog.vue'
 
 const router = useRouter()
 const store = useAuthStore()
 
+const logoutConfirmDialogRef = ref(null)
+
+const showLogoutConfirmDialog = () => { logoutConfirmDialogRef.value.show() }
+
+const closeLogoutConfirmDialog = () => { logoutConfirmDialogRef.value.hide() }
+
 const logout = async () => {
   try {
     await store.logout()
+
     toast.success('You have been logged out successfully.')
-    router.go('/login')
+    closeLogoutConfirmDialog()
+
+    router.push({'name': 'Login'})
   } catch (e) {
     toast.error(store.errorMessage)
   }

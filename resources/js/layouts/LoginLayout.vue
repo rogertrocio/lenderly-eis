@@ -9,7 +9,7 @@
           </div>
           <form @submit.prevent="login">
             <div class="mb-3">
-              <label for="email" class="form-label">Email address</label>
+              <label for="email" class="form-label">Email Address</label>
               <input
                 class="form-control" :class="{'is-invalid' : store.errors.email?.[0] }"
                 id="email"
@@ -28,7 +28,14 @@
                 id="exampleInputPassword1"
                 v-model="model.password">
             </div>
-            <button type="submit" class="btn btn-primary w-100 my-4">Login</button>
+
+            <BaseButton
+              type="submit"
+              class="w-100 my-4"
+              label="Login"
+              variant="primary"
+              :loading="store.loading"
+              :disabled="store.loading" />
           </form>
         </div>
       </div>
@@ -40,6 +47,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue3-toastify'
 import { useAuthStore } from '../stores/auth'
+import BaseButton from '../components/base/BaseButton.vue'
 
 const router = useRouter()
 const store = useAuthStore()
@@ -51,8 +59,10 @@ const model = ref({
 const login = async () => {
   try {
     await store.login(model.value)
+
     toast.success('You have successfully logged in.')
-    router.go('/')
+
+    router.push({'name': 'Dashboard'})
   } catch (e) {
     toast.error(store.errorMessage)
   }
