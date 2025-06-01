@@ -5,6 +5,7 @@ import DashboardPage from '../pages/DashboardPage.vue';
 import EmployeePage from '../pages/employee/EmployeePage.vue';
 import LoginLayout from '../layouts/LoginLayout.vue';
 import ProfilePage from '../pages/auth/ProfilePage.vue';
+import UserPage from '../pages/user/UserPage.vue';
 
 const routes = [
   {
@@ -15,6 +16,11 @@ const routes = [
         path: '/',
         name: 'Dashboard',
         component: DashboardPage,
+      },
+      {
+        path: '/users',
+        name: 'User',
+        component: UserPage,
       },
       {
         path: '/employees',
@@ -28,7 +34,6 @@ const routes = [
       }
     ]
   },
-
   {
     path: '/login',
     name: 'Login',

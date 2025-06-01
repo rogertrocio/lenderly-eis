@@ -46,6 +46,16 @@
           </RouterLink>
         </li>
         <li>
+            <RouterLink
+              to="/users"
+              exactActiveClass="active"
+              class="nav-link d-flex align-items-center gap-3"
+              :class="{' link-dark': route.path !== '/users'}">
+              <i class="bi bi-person-circle"></i>
+              <span>Users</span>
+            </RouterLink>
+          </li>
+        <li>
           <RouterLink
             to="/employees"
             exactActiveClass="active"
@@ -120,7 +130,7 @@ const closeCheckInConfirmDialog = () => { checkInConfirmDialogRef.value.hide() }
 const checkIn = async () => {
   try {
     const response = await storeAuth.checkIn()
-    toast.success(`You've successfully checked in today, ${date.format(response.data.data.check_in, 'MMM DD, YYYY [at] HH:mm:ss')}`)
+    toast.success(`You've successfully checked in today, ${date.format(response.data.data.check_in, 'MMM DD, YYYY [at] HH:mm')}`)
 
     closeCheckInConfirmDialog()
     profile()
@@ -136,7 +146,7 @@ const closeCheckOutConfirmDialog = () => { checkOutConfirmDialogRef.value.hide()
 const checkOut = async () => {
   try {
     const response = await storeAuth.checkOut()
-    toast.success(`You've successfully checked out today, ${date.format(response.data.data.check_out, 'MMM DD, YYYY [at] HH:mm:ss')}`)
+    toast.success(`You've successfully checked out today, ${date.format(response.data.data.check_out, 'MMM DD, YYYY [at] HH:mm')}`)
 
     closeCheckOutConfirmDialog()
     profile()

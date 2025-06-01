@@ -36,8 +36,8 @@ class Attendance extends Model
     {
         return [
             'date' => 'date',
-            'check_in' => 'datetime:F d, Y H:i:s',
-            'check_out' => 'datetime:F d, Y H:i:s',
+            'check_in' => 'datetime:F d, Y H:i',
+            'check_out' => 'datetime:F d, Y H:i',
             'is_active' => 'boolean',
         ];
     }

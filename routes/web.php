@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,6 +24,9 @@ Route::post('/check-out', [AuthController::class, 'checkOut'])->name('check-out'
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function () {
+    // Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::resource('users', UserController::class);
+
     Route::get('/{any}', function () {
         return view('app');
     })->where('any', '.*');

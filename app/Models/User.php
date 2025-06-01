@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -92,6 +94,28 @@ class User extends Authenticatable
     {
         return $this->hasOne(Attendance::class, 'user_id', 'id')->latestOfMany('date')
             ->where('date', now()->toDateString());
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Scope a query to filter users record.
+     */
+    #[Scope]
+    protected function commonFilters(Builder $query, array $filters): void
+    {
+        $search = $filters['filter']['search'] ?? null;
+        // $category = $filters['filter']['category'] ?? null;
+
+        $query->when($search, function ($query) use ($search) {
+            $query->where('first_name', 'LIKE', "%{$search}%")
+                ->orWhere('last_name', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%");
+        });
     }
 
     /*
