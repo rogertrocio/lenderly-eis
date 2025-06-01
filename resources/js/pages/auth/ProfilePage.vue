@@ -3,12 +3,35 @@
     <h1 class="h3">Profile</h1>
     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, rem.</p>
 
+		<!-- Profile Picture section -->
     <div class="row py-3">
       <div class="col-3">
-        <div class="fs-6 fw-medium">Basic information</div>
+        <div class="fs-6 fw-medium">Profile Picture</div>
+        <span class="fw-light" style="font-size: 14px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, accusantium.</span>
+      </div>
+      <div class="col-9 px-5">
+        <div class="row g-3">
+          <div class="col-md-12 mb-2">
+              <img :src="displayedAvatar" class="img-fluid rounded-circle" alt="Profile Picture" style="width: 150px; height: 150px; object-fit: cover;" />
+          </div>
+
+          <div class="col-md-6">
+            <input
+              type="file"
+              accept="image/*"
+              @change="(e) => uploadImage(e)" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Basic Information section -->
+    <div class="row py-3">
+      <div class="col-3">
+        <div class="fs-6 fw-medium">Basic Information</div>
         <span class="fw-light" style="font-size: 14px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore, reprehenderit.</span>
       </div>
-      <div class="col-9">
+      <div class="col-9 px-5">
         <form class="row g-3" @submit.prevent="update">
           <div class="col-md-6">
             <BaseInput
@@ -74,12 +97,13 @@
   </section>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BaseInput from '../../components/base/BaseInput.vue'
 import BaseButton from '../../components/base/BaseButton.vue'
 import { toast } from 'vue3-toastify'
 import { useProfileStore } from '../../stores/profile'
+import AvatarPlaceholder from '../../../../public/images/avatar.jpg'
 
 const router = useRouter()
 const store = useProfileStore()
@@ -90,6 +114,27 @@ const model = ref({
   phone: null,
   job: null,
   avatar: null,
+})
+const tempAvatar = ref(null)
+const imageExtensions = ref([
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'image/apng',
+  'image/avif',
+])
+
+const displayedAvatar = computed(() => {
+  if (tempAvatar.value !== null) {
+    return renderImage(tempAvatar.value)
+  }
+  if (tempAvatar.value === null && model.value.avatar !== null && model.value.avatar_url !== null) {
+    return model.value.avatar_url
+  }
+  if (tempAvatar.value === null && model.value.avatar === null && model.value.avatar_url === null) {
+    return AvatarPlaceholder
+  }
 })
 
 onMounted(() => {
@@ -107,15 +152,56 @@ const profile = async () => {
 
 const update = async () => {
   try {
+    if (tempAvatar.value !== null) {
+      model.value.avatar = tempAvatar.value
+    }
+    if (tempAvatar.value === null && model.value.avatar !== null && model.value.avatar_url !== null) {
+        model.value.avatar = ''
+    }
+    if (tempAvatar.value === null && model.value.avatar === null && model.value.avatar_url === null) {
+        model.value.avatar = ''
+    }
+
     await store.updateProfile(model.value)
 
     toast.success('Your profile successfully updated.')
 
-    profile()
-
-    router.push({'name': 'Profile'})
+    router.go({'name': 'Profile'})
   } catch (e) {
     toast.error(store.errorMessage)
   }
+}
+
+const uploadImage = (e) => {
+  var files = e.target.files || e.dataTransfer.files
+  if (files.length === 0) return
+
+  for (let i = 0; i < files.length; i++) {
+    if (!isImageFile(files[i])) {
+      toast.error(`${files[i].name} must be an image.`)
+      continue
+    }
+
+    if (!checkFileSize(files[i])) {
+      toast.error(`${files[i].name} size must not be greater than 2mb.`)
+      continue
+    }
+
+    tempAvatar.value = files[i]
+  }
+}
+
+const renderImage = (file) => {
+  const src = URL.createObjectURL(file)
+  return src
+}
+
+const isImageFile = (file) => {
+  return imageExtensions.value.includes(file.type)
+}
+
+const checkFileSize = (file) => {
+  const mb = (file.size / Math.pow(1024, 2)).toFixed(1) * 1
+  return mb <= 2
 }
 </script>

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 
 class ProfileRequest extends FormRequest
 {
@@ -34,7 +35,7 @@ class ProfileRequest extends FormRequest
             ],
             'phone' => ['nullable', 'string'],
             'job' => ['nullable', 'string'],
-            'avatar' => ['nullable'],
+            'avatar' => ['nullable', File::image()->min('1kb')->max('2mb')],
         ];
     }
 

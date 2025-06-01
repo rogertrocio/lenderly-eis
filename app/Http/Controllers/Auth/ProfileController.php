@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller implements HasMiddleware
 {
@@ -50,12 +51,23 @@ class ProfileController extends Controller implements HasMiddleware
      * @author Roger A. Trocio <rogertrocio29@gmail.com>
      * @mods
      *  RAT 20250601 - Created
+     *  RAT 20250601 - Store avatar image and path.
      */
     public function update(ProfileRequest $request): JsonResponse
     {
+        $user = auth()->user();
+
         $data = $request->validated();
 
-        $user = auth()->user();
+        if ($request->hasFile('avatar')) {
+            if (!is_null($user->avatar)) Storage::delete($user->avatar);
+
+            $data['avatar'] = $request->file('avatar')->store('avatars');
+        }
+
+        if (is_null($request->avatar)) {
+            unset($data['avatar']);
+        }
 
         $user->update($data);
 

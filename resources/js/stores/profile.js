@@ -33,8 +33,17 @@ export const useProfileStore = defineStore('profile', () => {
 
   const updateProfile = async (model) => {
     loading.value = true
+
+    const formData = new FormData()
+    formData.append('first_name', model.first_name)
+    formData.append('last_name', model.last_name)
+    formData.append('email', model.email)
+    formData.append('phone', model.phone)
+    formData.append('job', model.job)
+    formData.append('avatar', model.avatar)
+
     try {
-      const response = await axios.post('profile', model)
+      const response = await axios.post('profile', formData)
       profile.value = response.data.data
       return response.data.data
     } catch (e) {
