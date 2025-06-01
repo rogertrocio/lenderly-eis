@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 | Authentications
 |--------------------------------------------------------------------------
 */
+
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -24,11 +25,13 @@ Route::post('/check-out', [AuthController::class, 'checkOut'])->name('check-out'
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function () {
-    // Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::resource('users', UserController::class);
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    // Route::resource('users', UserController::class);
 
     Route::get('/{any}', function () {
         return view('app');
     })->where('any', '.*');
 });
-

@@ -1,7 +1,7 @@
 <template>
   <section>
-    <h1 class="h3">Profile</h1>
-    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, rem.</p>
+    <h1 class="h3">Edit User - {{ store.user.name }}</h1>
+    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quos, aut.</p>
 
     <!-- Profile Picture section -->
     <div class="row py-3">
@@ -82,7 +82,7 @@
               variant="secondary"
               class="me-2"
               :disabled="store.loading"
-              @click="router.push({'name': 'Dashboard'})" />
+              @click="router.push('/users')" />
 
             <BaseButton
               type="submit"
@@ -98,15 +98,16 @@
 </template>
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import BaseInput from '../../components/base/BaseInput.vue'
 import BaseButton from '../../components/base/BaseButton.vue'
-import { toast } from 'vue3-toastify'
-import { useProfileStore } from '../../stores/profile'
 import AvatarPlaceholder from '../../../../public/images/avatar.jpg'
+import { useUserStore } from '../../stores/user'
+import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue3-toastify'
 
+const store = useUserStore()
+const route = useRoute()
 const router = useRouter()
-const store = useProfileStore()
 const model = ref({
   first_name: null,
   last_name: null,
@@ -138,13 +139,13 @@ const displayedAvatar = computed(() => {
 })
 
 onMounted(() => {
-  profile()
+  user()
 })
 
-const profile = async () => {
+const user = async () => {
   try {
-    await store.getProfile()
-    model.value = store.profile
+    await store.getUser(route.params.id)
+    model.value = store.user
   } catch (e) {
     toast.error(store.errorMessage)
   }
@@ -162,11 +163,11 @@ const update = async () => {
         model.value.avatar = ''
     }
 
-    await store.updateProfile(model.value)
+    await store.updateUser(model.value, route.params.id)
 
-    toast.success('Your profile successfully updated.')
+    toast.success('User information successfully updated.')
 
-    router.go({'name': 'Profile'})
+    router.go({'name': 'User'})
   } catch (e) {
     toast.error(store.errorMessage)
   }

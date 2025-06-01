@@ -42,7 +42,8 @@
                 label="Edit"
                 variant="primary"
                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
-                class="me-2 btn-sm"/>
+                class="me-2 btn-sm"
+                @click="router.push(`/users/${user.id}`)"/>
 
               <BaseButton
                 type="button"
@@ -115,8 +116,10 @@ import ConfirmDialog from '../../components/dialogs/ConfirmDialog.vue'
 import { toast } from 'vue3-toastify'
 import AvatarPlaceholder from '../../../../public/images/avatar.jpg'
 import { useDate } from '../../composables/date'
+import { useRouter } from 'vue-router'
 
 const store = useUserStore()
+const router = useRouter()
 const date = useDate()
 const selectedUser = ref({})
 const currentPage = ref(1)

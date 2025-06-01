@@ -19,7 +19,7 @@ export const useProfileStore = defineStore('profile', () => {
 
   const getProfile = async () => {
     try {
-      const response = await axios.get('profile')
+      const response = await axios.get('/profile')
       profile.value = response.data.data
       return response.data.data
     } catch (e) {
@@ -43,7 +43,7 @@ export const useProfileStore = defineStore('profile', () => {
     formData.append('avatar', model.avatar)
 
     try {
-      const response = await axios.post('profile', formData)
+      const response = await axios.post('/profile', formData)
       profile.value = response.data.data
       return response.data.data
     } catch (e) {

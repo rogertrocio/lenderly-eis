@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -32,6 +34,60 @@ class UserController extends Controller
         }
 
         return view('app');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string|integer $id
+     * @return \App\Http\Resources\UserResource|\Illuminate\Contracts\View\View
+     * @author Roger A. Trocio <rogertrocio29@gmail.com>
+     * @mods
+     *  RAT 20250602 - Created
+     */
+    public function show(Request $request, string|int $id): UserResource|View
+    {
+        $user = User::findOrFail($id);
+
+        if ($request->wantsJson()) {
+            return new UserResource($user);
+        }
+
+        return view('app');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \App\Http\Requests\UserRequest $request
+     * @param string|integer $id
+     * @return \App\Http\Resources\UserResource
+     * @author Roger A. Trocio <rogertrocio29@gmail.com>
+     * @mods
+     *  RAT 20250602 - Created
+     */
+    public function update(UserRequest $request, string|int $id): UserResource
+    {
+        $user = User::findOrFail($id);
+
+        $data = $request->validated();
+
+        if ($request->hasFile('avatar')) {
+            if (!is_null($user->avatar)) Storage::delete($user->avatar);
+
+            $data['avatar'] = $request->file('avatar')->store('avatars');
+        }
+
+        if (is_null($request->avatar)) {
+            unset($data['avatar']);
+        }
+
+        $user->update($data);
+
+        $user->refresh();
+
+        return new UserResource($user);
     }
 
     /**

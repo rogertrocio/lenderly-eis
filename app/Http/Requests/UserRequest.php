@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 
-class ProfileRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,7 @@ class ProfileRequest extends FormRequest
      */
     public function rules(): array
     {
-        $user = request()->user();
+        $user = $this->user ?? null;
 
         return [
             'first_name' => ['required', 'min:2', 'max:255'],
@@ -31,7 +31,7 @@ class ProfileRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($user->id)
+                Rule::unique('users', 'email')->ignore($user)
             ],
             'phone' => ['nullable', 'string'],
             'job' => ['nullable', 'string'],

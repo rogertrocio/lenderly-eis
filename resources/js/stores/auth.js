@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
 
     try {
-      const response = await axios.post('authenticate', model)
+      const response = await axios.post('/authenticate', model)
       return response.data.data
     } catch (e) {
       errors.value = e.response?.data?.errors
@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
 
     try {
-      const response = await axios.post('logout')
+      const response = await axios.post('/logout')
       return response
     } catch (e) {
       errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to logout. Please try again.'
@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
 
     try {
-      const response = await axios.post('check-in')
+      const response = await axios.post('/check-in')
       return response
     } catch (e) {
       errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to check-in. Please try again.'
@@ -57,7 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
 
     try {
-      const response = await axios.post('check-out')
+      const response = await axios.post('/check-out')
       return response
     } catch (e) {
       errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to check-out. Please try again.'

@@ -6,6 +6,7 @@ import EmployeePage from '../pages/employee/EmployeePage.vue';
 import LoginLayout from '../layouts/LoginLayout.vue';
 import ProfilePage from '../pages/auth/ProfilePage.vue';
 import UserPage from '../pages/user/UserPage.vue';
+import UserEditPage from '../pages/user/UserEditPage.vue';
 
 const routes = [
   {
@@ -21,6 +22,11 @@ const routes = [
         path: '/users',
         name: 'User',
         component: UserPage,
+      },
+      {
+        path: '/users/:id',
+        name: 'UserEdit',
+        component: UserEditPage,
       },
       {
         path: '/employees',

@@ -15,7 +15,7 @@
               iconVariant !== null ? `text-${iconVariant}` : ''
             ]"
             style="font-size: 50px;"></i>
-          <span v-html="message"></span>
+          <span class="text-center" v-html="message"></span>
         </div>
         <div class="modal-footer">
           <BaseButton

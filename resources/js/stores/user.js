@@ -14,11 +14,15 @@ export const useUserStore = defineStore('user', () => {
   })
   const filter = reactive({
     search: '',
-    category: null,
+    role: null,
   })
   const errors = ref({
+    first_name: null,
+    last_name: null,
     email: null,
-    password: null,
+    phone: null,
+    job: null,
+    avatar: null,
   })
   const errorMessage = ref(null)
 
@@ -30,7 +34,7 @@ export const useUserStore = defineStore('user', () => {
     if (filter.search !== null && filter.search !== '') params['filter[search]'] = filter.search
 
     try {
-      const response = await axios.get('users', { params })
+      const response = await axios.get('/users', { params })
       users.value = response.data.data
 
       pagination.value.current_page = response.data.meta.current_page
@@ -44,11 +48,51 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  const getUser = async (id) => {
+    loading.value = true
+
+    try {
+      const response = await axios.get(`/users/${id}`)
+      user.value = response.data.data
+      return response.data.data
+    } catch (e) {
+      errors.value = e.response?.data?.errors
+      errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to fetch user. Please try again.'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const updateUser = async (model, id) => {
+    loading.value = true
+
+    const formData = new FormData()
+    formData.append('first_name', model.first_name)
+    formData.append('last_name', model.last_name)
+    formData.append('email', model.email)
+    formData.append('phone', model.phone)
+    formData.append('job', model.job)
+    formData.append('avatar', model.avatar)
+
+    try {
+      const response = await axios.post(`/users/${id}`, formData)
+      user.value = response.data.data
+      return response.data.data
+    } catch (e) {
+      errors.value = e.response?.data?.errors
+      errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to update user. Please try again.'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
   const deleteUser = async (id) => {
     loading.value = true
 
     try {
-      const response = await axios.delete(`users/${id}`)
+      const response = await axios.delete(`/users/${id}`)
       return response
     } catch (e) {
       errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to delete user. Please try again.'
@@ -67,6 +111,8 @@ export const useUserStore = defineStore('user', () => {
     errors,
     errorMessage,
     getUsers,
+    getUser,
+    updateUser,
     deleteUser,
   }
 })
