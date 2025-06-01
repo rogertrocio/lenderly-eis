@@ -2,10 +2,10 @@
   <aside class="col-md-2 sidebar d-none d-md-block">
     <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="height: 100%;">
       <div class="d-flex flex-column align-items-center">
-        <img src="https://i.pravatar.cc/150?img=59" alt="User Avatar" class="rounded-circle mb-3" style="width: 80px; height: 80px">
+        <img :src="AvatarPlaceholder" alt="User Avatar" class="rounded-circle mb-3" style="width: 80px; height: 80px">
         <div class="text-center">
-          <h5 class="mb-0">John Doe</h5>
-          <small class="text-muted">Admin</small>
+          <h5 class="mb-0">{{ store.profile.name }}</h5>
+          <small class="text-muted">{{ store.profile.email }}</small>
         </div>
       </div>
       <hr>
@@ -27,4 +27,17 @@
   </aside>
 </template>
 <script setup>
+import { onMounted } from 'vue'
+import { useProfileStore } from '../../stores/profile'
+import AvatarPlaceholder from '../../../../public/images/avatar.jpg'
+
+const store = useProfileStore()
+
+onMounted(async () => {
+  try {
+    await store.getProfile()
+  } catch (e) {
+    toast.error(store.errorMessage)
+  }
+})
 </script>

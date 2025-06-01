@@ -4,6 +4,7 @@ import MainLayout from '../layouts/MainLayout.vue';
 import DashboardPage from '../pages/DashboardPage.vue';
 import EmployeePage from '../pages/employee/EmployeePage.vue';
 import LoginLayout from '../layouts/LoginLayout.vue';
+import ProfilePage from '../pages/auth/ProfilePage.vue';
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
         name: 'Employee',
         component: EmployeePage,
       },
+      {
+        path: '/profile',
+        name: 'Profile',
+        component: ProfilePage,
+      }
     ]
   },
 

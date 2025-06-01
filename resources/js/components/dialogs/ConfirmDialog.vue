@@ -22,7 +22,6 @@
             type="button"
             :label="cancelLabel"
             :variant="cancelVariant"
-            :loading="loading"
             :disabled="loading"
             @click="emit('cancel')" />
 

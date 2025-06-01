@@ -9,24 +9,22 @@
           </div>
           <form @submit.prevent="login">
             <div class="mb-3">
-              <label for="email" class="form-label">Email Address</label>
-              <input
-                class="form-control" :class="{'is-invalid' : store.errors.email?.[0] }"
+              <BaseInput
+                label="Email Address"
                 id="email"
-                aria-describedby="emailHelp"
                 v-model="model.email"
-                @keydown="store.errors.email = null">
-                <div v-if="store.errors.email?.[0] !== null" class="invalid-feedback">
-                  {{ store.errors.email?.[0] }}
-                </div>
+                :error="store.errors.email?.[0] || null"
+                @keydown="store.errors.email = null" />
             </div>
+
             <div class="mb-3">
-              <label for="exampleInputPassword1" class="form-label">Password</label>
-              <input
+              <BaseInput
+                label="Password"
+                id="password"
                 type="password"
-                class="form-control"
-                id="exampleInputPassword1"
-                v-model="model.password">
+                v-model="model.password"
+                :error="store.errors.password?.[0] || null"
+                @keydown="store.errors.password = null" />
             </div>
 
             <BaseButton
@@ -48,6 +46,7 @@ import { useRouter } from 'vue-router'
 import { toast } from 'vue3-toastify'
 import { useAuthStore } from '../stores/auth'
 import BaseButton from '../components/base/BaseButton.vue'
+import BaseInput from '../components/base/BaseInput.vue'
 
 const router = useRouter()
 const store = useAuthStore()
