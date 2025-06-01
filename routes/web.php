@@ -14,6 +14,8 @@ Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('aut
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
 Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::post('/check-in', [AuthController::class, 'checkIn'])->name('check-in');
+Route::post('/check-out', [AuthController::class, 'checkOut'])->name('check-out');
 
 /*
 |--------------------------------------------------------------------------

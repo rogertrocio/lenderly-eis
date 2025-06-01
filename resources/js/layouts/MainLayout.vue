@@ -14,10 +14,7 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterView } from 'vue-router';
 import MainHeader from './partials/MainHeader.vue';
 import MainSidebar from './partials/MainSidebar.vue';
-
-const message = ref('Hello world');
 </script>

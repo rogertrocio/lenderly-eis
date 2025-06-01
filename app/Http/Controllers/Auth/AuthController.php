@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -20,7 +21,7 @@ class AuthController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('guest', only: ['login']),
-            new Middleware('auth', only: ['logout']),
+            new Middleware('auth', only: ['logout', 'checkIn', 'checkOut']),
         ];
     }
 
@@ -81,5 +82,70 @@ class AuthController extends Controller implements HasMiddleware
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+    }
+
+    /**
+     * Check in attendance of the authenticated user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @author Roger A. Trocio <rogertrocio29@gmail.com>
+     * @mods
+     *  RAT 20250601 - Created
+     */
+    public function checkIn(): JsonResponse
+    {
+        $user = auth()->user();
+
+        abort_if(
+            $user->attendances()
+                ->where('date', now()->toDateString())
+                ->exists(),
+            422,
+            'You are already checked in today.'
+        );
+
+        $attendance = $user->attendances()->create([
+            'date' => now()->toDateString(),
+            'check_in' => now(),
+            'is_active' => true
+        ]);
+
+        return response()->json(['data' => $attendance], 200);
+    }
+
+    /**
+     * Check out attendance of the authenticated user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @author Roger A. Trocio <rogertrocio29@gmail.com>
+     * @mods
+     *  RAT 20250601 - Created
+     */
+    public function checkOut(): JsonResponse
+    {
+        $user = auth()->user();
+
+        abort_if(
+            $user->attendances()
+                ->where('date', now()->toDateString())
+                ->whereNotNull(['check_in', 'check_out'])
+                ->exists(),
+            422,
+            'You are already checked out today.'
+        );
+
+        abort_if(
+            !$user->hasActiveAttendance(),
+            422,
+            'You haven’t checked in yet today.'
+        );
+
+        $attendance = $user->attendances()->where('is_active', true)->firstOrFail();
+
+        $attendance->update(['check_out' => now(), 'is_active' => false]);
+
+        $attendance->refresh();
+
+        return response()->json(['data' => $attendance], 200);
     }
 }

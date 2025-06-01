@@ -36,7 +36,7 @@ class ProfileController extends Controller implements HasMiddleware
     {
         if ($request->wantsJson()) {
             return response()->json([
-                'data' => auth()->user(),
+                'data' => auth()->user()->load('latestAttendance'),
             ], 200);
         }
 

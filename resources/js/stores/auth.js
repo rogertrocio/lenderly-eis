@@ -39,11 +39,41 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  const checkIn = async () => {
+    loading.value = true
+
+    try {
+      const response = await axios.post('check-in')
+      return response
+    } catch (e) {
+      errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to check-in. Please try again.'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const checkOut = async () => {
+    loading.value = true
+
+    try {
+      const response = await axios.post('check-out')
+      return response
+    } catch (e) {
+      errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to check-out. Please try again.'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     loading,
     errors,
     errorMessage,
     login,
     logout,
+    checkIn,
+    checkOut,
   }
 })
