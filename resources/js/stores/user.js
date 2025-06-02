@@ -102,6 +102,40 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  const exportReport = async (type = 'csv') => {
+    loading.value = true
+
+    if (type == 'csv') {
+      try {
+        const response = await axios.get('/users/export/csv', { params: { 'filter[search]': filter.search }, responseType: 'arraybuffer' })
+        const newBlob = new Blob([response.data], { type: 'text/csv' })
+        const link = document.createElement('a')
+        link.href = window.URL.createObjectURL(newBlob)
+        link.download = 'users.csv'
+        link.click()
+      } catch (e) {
+          errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to export CSV. Please try again.'
+      } finally {
+        loading.value = false
+      }
+    }
+
+    if (type == 'pdf') {
+      try {
+        const response = await axios.get('/users/export/pdf', { params: { 'filter[search]': filter.search }, responseType: 'blob' })
+        const newBlob = new Blob([response.data])
+        const link = document.createElement('a')
+        link.href = window.URL.createObjectURL(newBlob)
+        link.download = 'users.pdf'
+        link.click()
+      } catch (e) {
+          errorMessage.value = e.response?.data?.message || 'An error has occurred while trying to export PDF. Please try again.'
+      } finally {
+        loading.value = false
+      }
+    }
+  }
+
   return {
     users,
     user,
@@ -114,5 +148,6 @@ export const useUserStore = defineStore('user', () => {
     getUser,
     updateUser,
     deleteUser,
+    exportReport,
   }
 })

@@ -25,11 +25,12 @@ Route::post('/check-out', [AuthController::class, 'checkOut'])->name('check-out'
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/users/export/{type}', [UserController::class, 'export'])->name('users.report');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    // Route::resource('users', UserController::class);
 
     Route::get('/{any}', function () {
         return view('app');

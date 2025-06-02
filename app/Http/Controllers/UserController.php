@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersExport;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -104,5 +107,42 @@ class UserController extends Controller
         $user->delete();
 
         return response()->noContent();
+    }
+
+    /**
+     * Generate users report in PDF or CSV;
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $type
+     * @return void
+     * @author Roger A. Trocio <rogertrocio29@gmail.com>
+     * @mods
+     *  RAT 20250602 - Created
+     */
+    public function export(Request $request, string $type = 'csv')
+    {
+        if ($request->wantsJson()) {
+            if ($type == 'csv') {
+                return Excel::download(
+                    new UsersExport($request->only('filter')),
+                    'users.csv',
+                    \Maatwebsite\Excel\Excel::CSV,
+                    ['Content-Type' => 'text/csv']
+                );
+            }
+            if ($type == 'pdf') {
+                $users = User::commonFilters($request->only('filter'))
+                    ->orderBy('last_name')
+                    ->get();
+
+                $pdf = Pdf::loadView('reports.users', [
+                    'users' => $users
+                ]);
+
+                return $pdf->download('users.pdf');
+            }
+        }
+
+        return redirect()->route('users.index');
     }
 }

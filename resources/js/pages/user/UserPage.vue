@@ -3,13 +3,27 @@
     <h1 class="h3">Users</h1>
     <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quos, aut.</p>
 
-    <div class="row g-3 mb-2">
-      <div class="col-md-3">
+    <div class="row mb-3">
+      <div class="col d-flex justify-content-end align-items-center gap-3">
         <BaseInput
-          label=""
-          id="search"
-          placeholder="Search"
-          v-model="store.filter.search" />
+				label=""
+				id="search"
+				placeholder="Search"
+        style="max-width: 500px;"
+				v-model="store.filter.search" />
+
+      <div class="btn-group " role="group" aria-label="Small button group">
+        <BaseButton
+          type="button"
+          label="Export CSV"
+          variant="warning"
+          @click="exportCsv" />
+        <BaseButton
+          type="button"
+          label="Export PDF"
+          variant="secondary"
+          @click="exportPdf" />
+      </div>
       </div>
     </div>
 
@@ -166,5 +180,21 @@ const onPageChange = (e) => {
 
   currentPage.value = e
   store.getUsers(currentPage.value)
+}
+
+const exportCsv = async () => {
+  try {
+    await store.exportReport('csv')
+  } catch (e) {
+    toast.error(`${store.errorMessage}`)
+  }
+}
+
+const exportPdf = async () => {
+  try {
+    await store.exportReport('pdf')
+  } catch (e) {
+    toast.error(`${store.errorMessage}`)
+  }
 }
 </script>
