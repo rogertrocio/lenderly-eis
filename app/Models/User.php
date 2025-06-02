@@ -65,9 +65,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'avatar_url',
-        'is_already_checked_in',
-        'is_already_checked_out',
+        // 'avatar_url',
+        // 'is_already_checked_in',
+        // 'is_already_checked_out',
     ];
 
     /*
