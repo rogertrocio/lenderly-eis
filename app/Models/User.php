@@ -137,13 +137,19 @@ class User extends Authenticatable
     protected function commonFilters(Builder $query, array $filters): void
     {
         $search = $filters['filter']['search'] ?? null;
-        // $category = $filters['filter']['category'] ?? null;
+        $role = $filters['filter']['role'] ?? null;
 
-        $query->when($search, function ($query) use ($search) {
-            $query->where('first_name', 'LIKE', "%{$search}%")
-                ->orWhere('last_name', 'LIKE', "%{$search}%")
-                ->orWhere('email', 'LIKE', "%{$search}%");
-        });
+        $query->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
+            ->leftJoin('roles', 'roles.id', '=', 'role_user.role_id')
+            ->when($search, function ($query) use ($search) {
+                $query->where('users.first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('users.last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('users.email', 'LIKE', "%{$search}%")
+                    ->orWhere('users.job', 'LIKE', "%{$search}%");
+            })
+            ->when($role, function ($query) use ($role) {
+                $query->where('roles.id', '=', $role);
+            });
     }
 
     /*

@@ -6,11 +6,19 @@
     <div class="row mb-3">
       <div class="col d-flex justify-content-end align-items-center gap-3">
         <BaseInput
-				label=""
-				id="search"
-				placeholder="Search"
-        style="max-width: 500px;"
-				v-model="store.filter.search" />
+          label=""
+          id="search"
+          placeholder="Search"
+          style="max-width: 400px;"
+          v-model="store.filter.search" />
+
+        <BaseSelect
+          label=""
+          id="role"
+          style="max-width: 300px;"
+          option-label="Select Role"
+          :options="storeCommon.roles"
+          v-model="store.filter.role" />
 
       <div class="btn-group " role="group" aria-label="Small button group">
         <BaseButton
@@ -36,6 +44,7 @@
           <th scope="col">Email Address</th>
           <th scope="col" class="text-center">Check In</th>
           <th scope="col" class="text-center">Check Out</th>
+          <th scope="col" class="text-center">Role</th>
           <th class="text-center">Action</th>
         </tr>
       </thead>
@@ -49,6 +58,7 @@
           <td>{{ user.email }}</td>
           <td class="text-center">{{ user.latest_attendance ? user.latest_attendance.check_in : '-' }}</td>
           <td class="text-center">{{ user.latest_attendance ? user.latest_attendance.check_out : '-' }}</td>
+          <td class="text-center">{{ user.roles.length > 0 ? user.roles[0].name : '-'}}</td>
           <td class="text-center">
             <div class="col-12 d-flex justify-content-center">
               <BaseButton
@@ -124,6 +134,7 @@
 import { onMounted, watch, ref } from 'vue'
 import BaseInput from '../../components/base/BaseInput.vue'
 import BaseButton from '../../components/base/BaseButton.vue'
+import BaseSelect from '../../components/base/BaseSelect.vue'
 import { useUserStore } from '../../stores/user'
 import { debounce } from 'lodash'
 import ConfirmDialog from '../../components/dialogs/ConfirmDialog.vue'
@@ -131,9 +142,11 @@ import { toast } from 'vue3-toastify'
 import AvatarPlaceholder from '../../../../public/images/avatar.jpg'
 import { useDate } from '../../composables/date'
 import { useRouter } from 'vue-router'
+import { useCommonStore } from '../../stores/common'
 
 const store = useUserStore()
 const router = useRouter()
+const storeCommon = useCommonStore()
 const date = useDate()
 const selectedUser = ref({})
 const currentPage = ref(1)
@@ -144,8 +157,14 @@ watch(() => store.filter.search, debounce(() => {
   store.getUsers()
 }, 500))
 
+watch(() => store.filter.role, () => {
+  currentPage.value = 1
+  store.getUsers()
+})
+
 onMounted(async () => {
   store.getUsers()
+  storeCommon.getRoles()
 })
 
 const showUserDeleteConfirmDialog = () => { userDeleteConfirmDialogRef.value.show() }

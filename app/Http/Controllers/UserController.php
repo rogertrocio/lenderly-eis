@@ -27,8 +27,9 @@ class UserController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection|View
     {
-        $users = User::commonFilters($request->only('filter'))
-            ->with('latestAttendance')
+        $users = User::select('users.*')
+            ->commonFilters($request->only('filter'))
+            ->with('latestAttendance', 'roles')
             ->orderBy('last_name')
             ->paginate(8);
 

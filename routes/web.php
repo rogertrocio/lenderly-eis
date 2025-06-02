@@ -4,8 +4,8 @@ use App\Enums\Action;
 use App\Enums\Module;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\CommonController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\CheckPermission;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,6 +48,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/users/{user}', [UserController::class, 'destroy'])
         ->name('users.destroy')
         ->middleware(sprintf("permission:%s.%s", Module::USER, Action::DELETE));
+
+    Route::prefix('common')->group(function () {
+        Route::get('/roles', [CommonController::class, 'getRoles'])->name('common.roles');
+    });
 
     Route::get('/{any}', function () {
         return view('app');

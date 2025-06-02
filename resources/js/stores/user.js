@@ -32,6 +32,7 @@ export const useUserStore = defineStore('user', () => {
     const params = { page }
 
     if (filter.search !== null && filter.search !== '') params['filter[search]'] = filter.search
+    if (filter.role !== null && filter.role !== '') params['filter[role]'] = filter.role
 
     try {
       const response = await axios.get('/users', { params })
@@ -107,7 +108,7 @@ export const useUserStore = defineStore('user', () => {
 
     if (type == 'csv') {
       try {
-        const response = await axios.get('/users/export/csv', { params: { 'filter[search]': filter.search }, responseType: 'arraybuffer' })
+        const response = await axios.get('/users/export/csv', { params: { 'filter[search]': filter.search, 'filter[role]': filter.role }, responseType: 'arraybuffer' })
         const newBlob = new Blob([response.data], { type: 'text/csv' })
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(newBlob)
@@ -122,7 +123,7 @@ export const useUserStore = defineStore('user', () => {
 
     if (type == 'pdf') {
       try {
-        const response = await axios.get('/users/export/pdf', { params: { 'filter[search]': filter.search }, responseType: 'blob' })
+        const response = await axios.get('/users/export/pdf', { params: { 'filter[search]': filter.search, 'filter[role]': filter.role }, responseType: 'blob' })
         const newBlob = new Blob([response.data])
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(newBlob)

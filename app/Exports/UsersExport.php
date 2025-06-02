@@ -26,9 +26,9 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
      */
     public function collection()
     {
-        $query = User::query()->select('id', 'first_name', 'last_name', 'email', 'phone', 'job')
+        $query = User::query()->select('users.id', 'users.first_name', 'users.last_name', 'users.email', 'users.phone', 'users.job')
             ->commonFilters($this->filters)
-            ->orderBy('last_name');
+            ->orderBy('users.last_name');
 
         return $query->get();
     }
