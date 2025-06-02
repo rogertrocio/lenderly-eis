@@ -46,7 +46,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
@@ -66,6 +66,25 @@ class UserFactory extends Factory
                 'email' => 'johndoe@eis.com',
                 'phone' => '01923456789',
                 'job' => 'Software Engineer',
+            ];
+        });
+    }
+
+    /**
+     * Create a default user admin
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function employee(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'name' => 'Juan Cruz',
+                'first_name' => 'Juan',
+                'last_name' => 'Cruz',
+                'email' => 'juancruz@eis.com',
+                'phone' => '09112224321',
+                'job' => 'Accountant II',
             ];
         });
     }

@@ -1,8 +1,11 @@
 <?php
 
+use App\Enums\Action;
+use App\Enums\Module;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\CheckPermission;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,11 +29,25 @@ Route::post('/check-out', [AuthController::class, 'checkOut'])->name('check-out'
 */
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/users/export/{type}', [UserController::class, 'export'])->name('users.report');
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
-    Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/users/export/{type}', [UserController::class, 'export'])
+        ->name('users.report')
+        ->middleware(sprintf("permission:%s.%s", Module::USER, Action::ACCESS));
+
+    Route::get('/users', [UserController::class, 'index'])
+        ->name('users.index')
+        ->middleware(sprintf("permission:%s.%s", Module::USER, Action::ACCESS));
+
+    Route::get('/users/{user}', [UserController::class, 'show'])
+        ->name('users.show')
+        ->middleware(sprintf("permission:%s.%s", Module::USER, Action::VIEW));
+
+    Route::post('/users/{user}', [UserController::class, 'update'])
+        ->name('users.update')
+        ->middleware(sprintf("permission:%s.%s", Module::USER, Action::UPDATE));
+
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])
+        ->name('users.destroy')
+        ->middleware(sprintf("permission:%s.%s", Module::USER, Action::DELETE));
 
     Route::get('/{any}', function () {
         return view('app');

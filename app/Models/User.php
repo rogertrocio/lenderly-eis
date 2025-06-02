@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -96,6 +97,33 @@ class User extends Authenticatable
             ->where('date', now()->toDateString());
     }
 
+    /**
+     * The roles the belongs to the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+    }
+
+    /**
+     * Check if assignes roles to the user has contains permission name.
+     *
+     * @param [type] $permission
+     * @return boolean
+     */
+    public function hasPermission($permission): bool
+    {
+        foreach ($this->roles as $role) {
+            if ($role->permissions->contains('name', $permission)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Scopes
@@ -132,7 +160,7 @@ class User extends Authenticatable
     public function avatarUrl(): Attribute
     {
         return new Attribute(
-            get: fn () => $this->avatar ? Storage::url($this->avatar) : null,
+            get: fn() => $this->avatar ? Storage::url($this->avatar) : null,
         );
     }
 
@@ -145,7 +173,7 @@ class User extends Authenticatable
     public function isAlreadyCheckedIn(): Attribute
     {
         return new Attribute(
-            get: fn () => (bool) $this->hasActiveAttendance(),
+            get: fn() => (bool) $this->hasActiveAttendance(),
         );
     }
 
@@ -157,7 +185,7 @@ class User extends Authenticatable
     public function isAlreadyCheckedOut(): Attribute
     {
         return new Attribute(
-            get: fn () => (bool) !$this->hasActiveAttendance(),
+            get: fn() => (bool) !$this->hasActiveAttendance(),
         );
     }
 
