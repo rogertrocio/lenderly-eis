@@ -58,7 +58,7 @@ class AuthTest extends TestCase
      *
      * @return void
      */
-    public function test_authenticated_user_can_logout(): void
+    public function test_logout_authenticated_user(): void
     {
         $user = User::factory()->admin()->create();
 
