@@ -2,11 +2,11 @@ import { createWebHistory, createRouter } from 'vue-router';
 
 import MainLayout from '../layouts/MainLayout.vue';
 import DashboardPage from '../pages/DashboardPage.vue';
-import EmployeePage from '../pages/employee/EmployeePage.vue';
 import LoginLayout from '../layouts/LoginLayout.vue';
 import ProfilePage from '../pages/auth/ProfilePage.vue';
 import UserPage from '../pages/user/UserPage.vue';
 import UserEditPage from '../pages/user/UserEditPage.vue';
+import PageNotFound from '../pages/PageNotFound.vue';
 
 const routes = [
   {
@@ -39,6 +39,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginLayout,
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'PageNotFound',
+    component: PageNotFound
   },
 ];
 

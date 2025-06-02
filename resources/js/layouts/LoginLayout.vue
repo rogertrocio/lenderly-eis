@@ -61,7 +61,7 @@ const login = async () => {
 
     toast.success('You have successfully logged in.')
 
-    window.location.href = '/'
+    router.push('/')
   } catch (e) {
     toast.error(store.errorMessage)
   }
