@@ -93,3 +93,21 @@ To run unit test, run this command:
 ```bash
 $ php artisan test
 ```
+
+## Accessing the Application
+
+To access the application, login the following credentials below.
+
+> A user with Administrator role.
+
+```
+username: johndoe@eis.com
+password: password
+```
+
+> A user with Employee role.
+
+```
+username: juancruz@eis.com
+password: password
+```
