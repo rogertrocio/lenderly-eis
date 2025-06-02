@@ -29,11 +29,6 @@ const routes = [
         component: UserEditPage,
       },
       {
-        path: '/employees',
-        name: 'Employee',
-        component: EmployeePage,
-      },
-      {
         path: '/profile',
         name: 'Profile',
         component: ProfilePage,

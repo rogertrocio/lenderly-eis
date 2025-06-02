@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,17 +28,18 @@ class ProfileController extends Controller implements HasMiddleware
      * Get the profile of the authenticated user.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Contracts\View\View
+     * @return \App\Http\Resources\UserResource|\Illuminate\Contracts\View\View
      * @author Roger A. Trocio <rogertrocio29@gmail.com>
      * @mods
      *  RAT 20250601 - Created
+     *  RAT 20250602 - Return an UserResource response.
      */
-    public function profile(Request $request): JsonResponse|View
+    public function profile(Request $request): UserResource|View
     {
         if ($request->wantsJson()) {
-            return response()->json([
-                'data' => auth()->user()->load('latestAttendance'),
-            ], 200);
+            $user = auth()->user();
+
+            return new UserResource($user->load('roles', 'roles.permissions', 'latestAttendance'));
         }
 
         return view('app');
@@ -47,13 +49,14 @@ class ProfileController extends Controller implements HasMiddleware
      * Update the profile of the authenticated user.
      *
      * @param \App\Http\Requests\ProfileRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \App\Http\Resources\UserResource
      * @author Roger A. Trocio <rogertrocio29@gmail.com>
      * @mods
      *  RAT 20250601 - Created
      *  RAT 20250601 - Store avatar image and path.
+     *  RAT 20250602 - Return an UserResource response.
      */
-    public function update(ProfileRequest $request): JsonResponse
+    public function update(ProfileRequest $request): UserResource
     {
         $user = auth()->user();
 
@@ -71,8 +74,6 @@ class ProfileController extends Controller implements HasMiddleware
 
         $user->update($data);
 
-        return response()->json([
-            'data' => $user,
-        ], 200);
+        return new UserResource($user);
     }
 }

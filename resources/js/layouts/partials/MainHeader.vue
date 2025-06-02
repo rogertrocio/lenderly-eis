@@ -60,7 +60,7 @@ const logout = async () => {
     toast.success('You have been logged out successfully.')
     closeLogoutConfirmDialog()
 
-    router.push({'name': 'Login'})
+    window.location.href = '/login'
   } catch (e) {
     toast.error(store.errorMessage)
   }

@@ -34,35 +34,15 @@
         </div>
       </div>
       <hr>
-      <ul class="nav nav-pills flex-column mb-auto">
-        <li>
+      <ul class="nav nav-pills flex-column mb-auto" v-if="profileLoaded">
+        <li v-for="(item, index) in storeNavigation.filteredMenu" :key="index">
           <RouterLink
-            to="/"
+            :to="item.link"
             exactActiveClass="active"
             class="nav-link d-flex align-items-center gap-3"
-            :class="{' link-dark': route.path !== '/'}">
-            <i class="bi bi-columns-gap"></i>
-            <span>Dashboard</span>
-          </RouterLink>
-        </li>
-        <li>
-            <RouterLink
-              to="/users"
-              exactActiveClass="active"
-              class="nav-link d-flex align-items-center gap-3"
-              :class="{' link-dark': route.path !== '/users'}">
-              <i class="bi bi-person-circle"></i>
-              <span>Users</span>
-            </RouterLink>
-          </li>
-        <li>
-          <RouterLink
-            to="/employees"
-            exactActiveClass="active"
-            class="nav-link d-flex align-items-center gap-3"
-            :class="{' link-dark': route.path !== '/employees'}">
-            <i class="bi bi-people-fill"></i>
-            <span>Employees</span>
+            :class="{' link-dark': route.path !== item.link}">
+            <i :class="item.icon"></i>
+            <span>{{ item.name }}</span>
           </RouterLink>
         </li>
       </ul>
@@ -103,23 +83,29 @@ import BaseButton from '../../components/base/BaseButton.vue'
 import { toast } from 'vue3-toastify'
 import ConfirmDialog from '../../components/dialogs/ConfirmDialog.vue'
 import { useDate } from '../../composables/date'
+import { useNavigationStore } from '../../stores/navigation'
 
 const route = useRoute()
 const storeProfile = useProfileStore()
 const storeAuth = useAuthStore()
+const storeNavigation = useNavigationStore()
 const date = useDate()
 const checkInConfirmDialogRef = ref(null)
 const checkOutConfirmDialogRef = ref(null)
+const profileLoaded = ref(false)
 
 onMounted(() => {
   profile()
 })
 
 const profile = async () => {
+    profileLoaded.value = true
   try {
     await storeProfile.getProfile()
+    storeNavigation.setMenu(storeProfile.profile.roles)
   } catch (e) {
     toast.error(storeProfile.errorMessage)
+    profileLoaded.value = false
   }
 }
 

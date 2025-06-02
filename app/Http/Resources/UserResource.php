@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\Action;
+use App\Enums\Module;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,6 +27,9 @@ class UserResource extends JsonResource
             'avatar' => $this->avatar,
             'avatar_url' => $this->avatar_url,
             'latest_attendance' => new AttendanceResource($this->whenLoaded('latestAttendance')),
+            'is_already_checked_in' => $this->is_already_checked_in,
+            'is_already_checked_out' => $this->is_already_checked_out,
+            'roles' =>  RoleResource::collection($this->whenLoaded('roles')),
             'created_at' => $this->created_at?->format('F d, Y H:i A'),
             'updated_at' => $this->updated_at?->format('F d, Y H:i A'),
         ];
